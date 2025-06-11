@@ -134,11 +134,11 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
     return (
       <Button
         variant="ghost"
-        className="w-full justify-between px-3 py-2 h-auto text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground"
+        className="w-full justify-between px-3 py-2 h-auto text-xs font-semibold text-muted-foreground uppercase tracking-wider hover:text-foreground transition-colors duration-200"
         onClick={onToggle}
       >
         {title}
-        <ChevronRight className={cn("h-3 w-3 transition-transform", isExpanded && "rotate-90")} />
+        <ChevronRight className={cn("h-3 w-3 transition-transform duration-200", isExpanded && "rotate-90")} />
       </Button>
     );
   };
@@ -155,17 +155,17 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
               key={item.id}
               variant="ghost"
               className={cn(
-                'w-full transition-all duration-200',
-                isCollapsed ? 'justify-center px-2' : 'justify-start gap-3'
+                'w-full transition-all duration-200 hover:bg-accent hover:text-accent-foreground',
+                isCollapsed ? 'justify-center px-2 h-12' : 'justify-start gap-3 h-10'
               )}
               onClick={() => handleExternalClick(item.url)}
               title={isCollapsed ? item.label : undefined}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="h-4 w-4 flex-shrink-0" />
               {!isCollapsed && (
                 <>
-                  <span className="flex-1 text-left">{item.label}</span>
-                  <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                  <span className="flex-1 text-left truncate">{item.label}</span>
+                  <ExternalLink className="h-3 w-3 text-muted-foreground flex-shrink-0" />
                 </>
               )}
             </Button>
@@ -177,15 +177,15 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
             key={item.id}
             variant={isActive ? 'secondary' : 'ghost'}
             className={cn(
-              'w-full transition-all duration-200',
-              isCollapsed ? 'justify-center px-2' : 'justify-start gap-3',
-              isActive && 'bg-secondary/80 font-medium'
+              'w-full transition-all duration-200 hover:bg-accent hover:text-accent-foreground',
+              isCollapsed ? 'justify-center px-2 h-12' : 'justify-start gap-3 h-10',
+              isActive && 'bg-secondary/80 font-medium shadow-sm'
             )}
             onClick={() => onTabChange(item.id)}
             title={isCollapsed ? item.label : undefined}
           >
-            <Icon className="h-4 w-4" />
-            {!isCollapsed && item.label}
+            <Icon className="h-4 w-4 flex-shrink-0" />
+            {!isCollapsed && <span className="truncate">{item.label}</span>}
           </Button>
         );
       });
@@ -195,20 +195,20 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
 
   return (
     <div className={cn(
-      "bg-card border-r border-border h-full flex flex-col transition-all duration-300 fixed left-0 top-0 z-40",
+      "bg-card border-r border-border h-full flex flex-col transition-all duration-300 ease-in-out fixed left-0 top-0 z-50 shadow-lg",
       isCollapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between">
           {!isCollapsed && (
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-primary rounded-lg">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="p-2 bg-primary rounded-lg flex-shrink-0">
                 <Activity className="h-5 w-5 text-primary-foreground" />
               </div>
-              <div>
-                <h1 className="font-bold text-lg">MLOps Portal</h1>
-                <p className="text-sm text-muted-foreground">AI Serving Platform</p>
+              <div className="min-w-0">
+                <h1 className="font-bold text-lg truncate">MLOps Portal</h1>
+                <p className="text-sm text-muted-foreground truncate">AI Serving Platform</p>
               </div>
             </div>
           )}
@@ -216,7 +216,10 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
             variant="ghost"
             size="sm"
             onClick={onToggleCollapse}
-            className={cn("h-8 w-8 p-0", isCollapsed && "mx-auto")}
+            className={cn(
+              "h-8 w-8 p-0 hover:bg-accent transition-colors duration-200",
+              isCollapsed && "mx-auto"
+            )}
           >
             {isCollapsed ? (
               <ChevronRight className="h-4 w-4" />
@@ -296,7 +299,7 @@ export function Sidebar({ activeTab, onTabChange, userRole, isCollapsed, onToggl
       {/* Footer */}
       <div className="p-4 border-t border-border">
         <div className={cn(
-          "flex items-center",
+          "flex items-center transition-all duration-200",
           isCollapsed ? "justify-center" : "justify-between"
         )}>
           {!isCollapsed && (

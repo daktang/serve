@@ -87,13 +87,13 @@ const getRoleLabel = (role: string) => {
 
 export function Navbar({ currentProject, onProjectChange, user, isSidebarCollapsed }: NavbarProps) {
   return (
-    <div className="h-16 bg-card border-b border-border flex items-center justify-between px-6">
+    <div className="h-16 bg-card border-b border-border flex items-center justify-between px-6 transition-all duration-300 ease-in-out shadow-sm">
       {/* Left side - Project selector */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium text-muted-foreground">Project:</span>
           <Select value={currentProject} onValueChange={onProjectChange}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-48 transition-all duration-200 hover:border-primary/50 focus:border-primary">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -111,25 +111,25 @@ export function Navbar({ currentProject, onProjectChange, user, isSidebarCollaps
       <div className="flex items-center gap-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-3 h-auto p-2">
+            <Button variant="ghost" className="flex items-center gap-3 h-auto p-2 hover:bg-accent transition-colors duration-200">
               <div className="flex items-center gap-3">
                 <div className="text-right">
                   <div className="text-sm font-medium">{user.name}</div>
-                  <Badge variant="outline" className={`text-xs ${getRoleColor(user.role)}`}>
+                  <Badge variant="outline" className={`text-xs transition-colors duration-200 ${getRoleColor(user.role)}`}>
                     {getRoleLabel(user.role)}
                   </Badge>
                 </div>
-                <Avatar className="h-8 w-8">
+                <Avatar className="h-8 w-8 transition-transform duration-200 hover:scale-105">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback>
+                  <AvatarFallback className="bg-primary text-primary-foreground">
                     {user.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
               </div>
-              <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuContent align="end" className="w-56 animate-in slide-in-from-top-2 duration-200">
             <DropdownMenuLabel>
               <div>
                 <div className="font-medium">{user.name}</div>
@@ -137,22 +137,22 @@ export function Navbar({ currentProject, onProjectChange, user, isSidebarCollaps
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className="transition-colors duration-200 hover:bg-accent">
               <User className="h-4 w-4 mr-2" />
               Profile
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="transition-colors duration-200 hover:bg-accent">
               <Settings className="h-4 w-4 mr-2" />
               Preferences
             </DropdownMenuItem>
             {user.role === 'system_admin' && (
-              <DropdownMenuItem>
+              <DropdownMenuItem className="transition-colors duration-200 hover:bg-accent">
                 <Shield className="h-4 w-4 mr-2" />
                 Admin Panel
               </DropdownMenuItem>
             )}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive transition-colors duration-200 hover:bg-destructive/10">
               <LogOut className="h-4 w-4 mr-2" />
               Sign out
             </DropdownMenuItem>

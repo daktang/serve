@@ -14,7 +14,7 @@ import { RoleManagement } from '@/components/role-management';
 import { SystemConfig } from '@/components/system-config';
 import { TeamMembers } from '@/components/team-members';
 import { ApiKeys } from '@/components/api-keys';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
@@ -28,6 +28,12 @@ export default function App() {
     role: 'project_admin' as const, // Change this to test different roles
     avatar: undefined,
   };
+
+  // 사이드바 상태 변경 시 애니메이션 동기화
+  useEffect(() => {
+    // 사이드바 상태 변경 시 부드러운 전환을 위한 클래스 추가
+    document.body.style.setProperty('--sidebar-width', isSidebarCollapsed ? '64px' : '256px');
+  }, [isSidebarCollapsed]);
 
   const renderContent = () => {
     switch (activeTab) {
@@ -61,7 +67,8 @@ export default function App() {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen overflow-hidden bg-background">
+      {/* 사이드바 */}
       <Sidebar 
         activeTab={activeTab} 
         onTabChange={setActiveTab}
@@ -69,17 +76,24 @@ export default function App() {
         isCollapsed={isSidebarCollapsed}
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
-      <div className={`flex flex-col flex-1 transition-all duration-300 ${
+      
+      {/* 메인 컨텐츠 영역 */}
+      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
         isSidebarCollapsed ? 'ml-16' : 'ml-64'
       }`}>
+        {/* 상단바 */}
         <Navbar 
           currentProject={currentProject}
           onProjectChange={setCurrentProject}
           user={user}
           isSidebarCollapsed={isSidebarCollapsed}
         />
-        <main className="flex-1 overflow-auto">
-          {renderContent()}
+        
+        {/* 메인 컨텐츠 */}
+        <main className="flex-1 overflow-auto bg-background">
+          <div className="transition-all duration-300 ease-in-out">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>
