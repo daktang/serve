@@ -29,12 +29,6 @@ export default function App() {
     avatar: undefined,
   };
 
-  // 사이드바 상태 변경 시 애니메이션 동기화
-  useEffect(() => {
-    // 사이드바 상태 변경 시 부드러운 전환을 위한 클래스 추가
-    document.body.style.setProperty('--sidebar-width', isSidebarCollapsed ? '64px' : '256px');
-  }, [isSidebarCollapsed]);
-
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
@@ -77,10 +71,13 @@ export default function App() {
         onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       
-      {/* 메인 컨텐츠 영역 */}
-      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
-        isSidebarCollapsed ? 'ml-16' : 'ml-64'
-      }`}>
+      {/* 메인 컨텐츠 영역 - 사이드바 상태에 따라 동적으로 마진 조정 */}
+      <div 
+        className="flex flex-col flex-1 transition-all duration-300 ease-in-out"
+        style={{
+          marginLeft: isSidebarCollapsed ? '64px' : '256px'
+        }}
+      >
         {/* 상단바 */}
         <Navbar 
           currentProject={currentProject}
