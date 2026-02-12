@@ -1,69 +1,31 @@
-# ---------------------------------- PROJECT CONFIG -----------------------------------  
-export BASE_DIR=$(pwd -P)  
-export PROFILE_NAME=$(basename $BASE_DIR)  
-export PROJECT_NAME=$PROFILE_NAME  
-export PROJECT_ENV=dev  
-export PROJECT_VERSION="v0.0.1"
+version: '3'
 
-# ---------------------------------- ADMIN CONFIG -----------------------------------  
-export PROJECT_ADMIN="AISERVING_SERVICE_ADMIN"
+vars:
+  CLUSTER_NAME: '{{.KIND_PROFILE}}'
+  NODE_IMAGE: '{{.KIND_NODE_IMAGE}}'
+  KUBECONFIG_PATH: '{{.KUBECONFIG}}'
 
-# ---------------------------------- LOGGING CONFIG -----------------------------------  
-export GLOBAL_LOG_LEVEL="DEBUG"
+tasks:
 
-# ---------------------------------- SSL CONFIG -----------------------------------  
-export SSL_CERT_DIR="/etc/ssl/certs"  
-export CURL_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"  
-export REQUEST_CA_BUNDLE="/etc/ssl/certs/ca-certificates.crt"
+  kind:start:
+    desc: Create kind cluster (minikube start replacement)
+    cmds:
+      - |
+        if kind get clusters | grep -q "^${CLUSTER_NAME}$"; then
+          echo "Kind cluster ${CLUSTER_NAME} already exists"
+        else
+          kind create cluster \
+            --name ${CLUSTER_NAME} \
+            --image ${NODE_IMAGE} \
+            --kubeconfig ${KUBECONFIG_PATH}
+        fi
 
-# ---------------------------------- PYTHON & PACKAGE MANAGEMENT CONFIG -----------------------------------  
-export PYTHON_VERSION="3.12"
+  kind:delete:
+    desc: Delete kind cluster
+    cmds:
+      - kind delete cluster --name ${CLUSTER_NAME}
 
-### CONDA & POETRY  
-if [ $(conda env list | grep -i $PROFILE_NAME | wc -l) -lt 1 ]; then  
-	conda create -y -n $PROFILE_NAME python=$PYTHON_VERSION poetry  
-fi  
-layout conda $PROFILE_NAME
-
-# ---------------------------------- KUBERNETES CONFIG -----------------------------------  
-mkdir -p $BASE_DIR/.kube  
-export KUBECONFIG=$BASE_DIR/.kube/config  
-export KUBERNETES_CLUSTER_API_SERVER_URL=""   # URL 제거
-
-# ---------------------------------- MINIKUBE CONFIG -----------------------------------  
-export MINIKUBE_PROFILE=$(basename $BASE_DIR)  
-export MINIKUBE_EMBED_CERTS=true  
-export MINIKUBE_DELETE_ON_FAILURE=true  
-export MINIKUBE_DRIVER=docker  
-export MINIKUBE_CPUS=2  
-export MINIKUBE_MEMORY=4g  
-export MINIKUBE_DISK_SIZE=50g  
-export MINIKUBE_IMAGE_REPOSITORY=""          # samsungds 제거  
-export MINIKUBE_BASE_IMAGE=""                # 베이스 이미지 제거  
-export MINIKUBE_KUBERNETES_VERSION=v1.31.12  #1.31.12 upgrade 목표.
-export MINIKUBE_BINARY_MIRROR=""             # Nexus URL 제거  
-export PATH=$HOME/.minikube/cache/linux/amd64/$MINIKUBE_KUBERNETES_VERSION:$PATH  
-eval $(minikube -p $MINIKUBE_PROFILE docker-env) # minikube & local docker image share
-
-# ---------------------------------- CI/CD CONFIG -----------------------------------  
-### SKAFFOLD  
-export SKAFFOLD_DEFAULT_REPO=""               # URL 제거
-
-### IMAGE BUILD  
-export IMAGE_REPOSITORY=""                    # URL 제거  
-export IMAGE_PULL_POLICY="IfNotPresent"
-
-### HELM  
-export HELM_PACKAGE_NAME=$PROFILE_NAME  
-export KUBERNETES_DEPLOY_NAMESPACE=default  
-export KUBERNETES_DEPLOY_SERVICEACCOUNT_NAME=$PROFILE_NAME  
-export SERVICE_TARGET_PORT="8000"
-
-### INGRESS  
-export INGRESS_ENABLED="true"  
-export INGRESS_CLASSNAME="istio"  
-export INGRESS_VERSION=v1.23.5                # 1.25.3 upgrade 목표.
-export INGRESS_HOSTNAME=""                    # URL/호스트명 제거
-
-# ---------------------------------- ECO SYSTEM CONFIG -----------------------------------  
-export OIDC_MANAGEMENT_SERVICE_URL=""        # URL 제거
+  kind:status:
+    desc: Check cluster status
+    cmds:
+      - kubectl get nodes
