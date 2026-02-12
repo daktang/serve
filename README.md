@@ -108,6 +108,6 @@ export PGSQL_DATABASE_HOST=""                # URL/호스트 제거
 export PGSQL_DATABASE_PORT="9999"  
 export PGSQL_DATABASE_USER=""                # ID 제거  
 export PGSQL_DATABASE_PASSWORD=""            # 비밀값 제거  
-export PGSQL_DATABASE_NAME="aiserving_service"  
+export PGSQL_DATABASE_NAME=""  
 export PGSQL_DATABASE_SCHEMA=v1
 
