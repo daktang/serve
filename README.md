@@ -1,14 +1,9 @@
 version: "3"
 
-vars:
-  KIND_PROFILE: "{{.KIND_PROFILE}}"
-  KIND_NODE_IMAGE: "{{.KIND_NODE_IMAGE}}"
-  KUBECONFIG: "{{.KUBECONFIG}}"
-
 tasks:
 
   kind:start:
-    desc: Create kind cluster (minikube start replacement)
+    desc: Create kind cluster
     cmds:
       - |
         if kind get clusters 2>/dev/null | grep -q "^${KIND_PROFILE}$"; then
