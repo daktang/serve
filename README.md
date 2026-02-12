@@ -8,23 +8,6 @@ export PROJECT_VERSION="v0.0.1"
 # ---------------------------------- ADMIN CONFIG -----------------------------------  
 export PROJECT_ADMIN="AISERVING_SERVICE_ADMIN"
 
-# In-Memory Cache OIDC ID  
-export PROJECT_API_USER_ID=""               # ID 제거  
-export AISERVING_PROJECT_API_USER_ID=""     # ID 제거
-
-if [ "$PROJECT_ENV" == "dev" ]; then  
-    export PROJECT_API_USER_PW=""                     # 비밀값 제거  
-    export AISERVING_PROJECT_API_USER_PW=""           # 비밀값 제거  
-    export PROJECT_ADMIN_TOKEN_EXP_DEFAULT="28800s" # 8 hour  
-elif [ "$PROJECT_ENV" == "prod" ]; then  
-    export PROJECT_API_USER_PW=""                     # 비밀값 제거  
-    export AISERVING_PROJECT_API_USER_PW=""           # 비밀값 제거  
-    export PROJECT_ADMIN_TOKEN_EXP_DEFAULT="28800s" # 8 hour  
-else  
-    echo "Invalid PROJECT_API_USER_PW value. Please use 'dev' or 'prod'."  
-    exit 1  
-fi
-
 # ---------------------------------- LOGGING CONFIG -----------------------------------  
 export GLOBAL_LOG_LEVEL="DEBUG"
 
@@ -57,7 +40,7 @@ export MINIKUBE_MEMORY=4g
 export MINIKUBE_DISK_SIZE=50g  
 export MINIKUBE_IMAGE_REPOSITORY=""          # samsungds 제거  
 export MINIKUBE_BASE_IMAGE=""                # 베이스 이미지 제거  
-export MINIKUBE_KUBERNETES_VERSION=v1.29.14  #1.31.12 upgrade 목표.
+export MINIKUBE_KUBERNETES_VERSION=v1.31.12  #1.31.12 upgrade 목표.
 export MINIKUBE_BINARY_MIRROR=""             # Nexus URL 제거  
 export PATH=$HOME/.minikube/cache/linux/amd64/$MINIKUBE_KUBERNETES_VERSION:$PATH  
 eval $(minikube -p $MINIKUBE_PROFILE docker-env) # minikube & local docker image share
@@ -83,31 +66,4 @@ export INGRESS_VERSION=v1.23.5                # 1.25.3 upgrade 목표.
 export INGRESS_HOSTNAME=""                    # URL/호스트명 제거
 
 # ---------------------------------- ECO SYSTEM CONFIG -----------------------------------  
-### OIDC(KEYCLOAK)
-export OIDC_CLIENT_ID=""                     # ID 제거  
-export OIDC_REALM_NAME=""                    # ID 제거  
-export OIDC_ENV=dev  
-if [ "$OIDC_ENV" == "dev" ]; then  
-    export OIDC_BASE_URL=""                  # URL 제거  
-    export OIDC_CLIENT_SECRET=""             # 비밀값 제거  
-elif [ "$OIDC_ENV" == "prod" ]; then  
-    export OIDC_BASE_URL=""                  # URL 제거  
-    export OIDC_CLIENT_SECRET=""             # 비밀값 제거  
-else  
-    echo "Invalid OIDC_ENV value. Please use 'dev' or 'prod'."  
-    exit 1  
-fi
-
-# ---------------------------------- MANAGEMENT API CONFIG -----------------------------------  
-export OIDC_MANAGEMENT_SERVICE_URL=""        # URL 제거  
-
-
-# ---------------------------------- DATABASE CONFIG -----------------------------------  
-# POSTGRESQL  
-export PGSQL_DATABASE_HOST=""                # URL/호스트 제거  
-export PGSQL_DATABASE_PORT="9999"  
-export PGSQL_DATABASE_USER=""                # ID 제거  
-export PGSQL_DATABASE_PASSWORD=""            # 비밀값 제거  
-export PGSQL_DATABASE_NAME=""  
-export PGSQL_DATABASE_SCHEMA=v1
-
+export OIDC_MANAGEMENT_SERVICE_URL=""        # URL 제거
