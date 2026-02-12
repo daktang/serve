@@ -1,16 +1,25 @@
-task kind:start
-task: [kind:start] if kind get clusters | grep -q "^uv-fastapi-starter-kit$"; then
-  echo "Cluster uv-fastapi-starter-kit already exists"
-else
-  kind create cluster
-    --name uv-fastapi-starter-kit
-    --image mirror.net/docker.io/kindest/node:v1.31.12
-    --kubeconfig .kube/config
-fi
+# -----------------------------
+# 1. Docker Build
+# -----------------------------
+docker_build(
+    "fastapi-starter-kit",   # 이미지 이름
+    context=".",             # Dockerfile 위치 (루트에 있다고 가정)
+)
 
-No kind clusters found.
-Creating cluster "kind" ...
- ✗ Ensuring node image (kindest/node:v1.35.0) 🖼 
-ERROR: failed to create cluster: failed to pull image "kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f": command "docker pull kindest/node:v1.35.0@sha256:452d707d4862f52530247495d180205e029056831160e22870e37e3f6c1ac31f" failed with error: exit status 1
-Command Output: Error response from daemon: Get "https://registry-1.docker.io/v2/": read tcp 10.166.236.81:39500->35.169.121.184:443: read: connection reset by peer
-task: Failed to run task "kind:start": exit status 1
+# -----------------------------
+# 2. Helm Render
+# -----------------------------
+helm_chart = helm(
+    "./deployments/helm",
+    name="fastapi-starter-kit",
+)
+
+# -----------------------------
+# 3. Apply to Cluster
+# -----------------------------
+k8s_yaml(helm_chart)
+
+# -----------------------------
+# 4. kind 이미지 자동 로드
+# -----------------------------
+k8s_kind()
