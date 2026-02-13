@@ -1,18 +1,21 @@
+# -----------------------------
+# 1. Git Tag (skaffold gitCommit 대체)
+# -----------------------------
+git_sha = local("git rev-parse --short HEAD", quiet=True).strip()
 
 # -----------------------------
-# 1. Docker Build
-git_sha = local("git rev-parse -short HEAD").strip()
-
+# 2. Docker Build (push 없음 = 로컬 클러스터용)
+# -----------------------------
 docker_build(
-    "fastapi-starter-kit",   # Image Name
-    ".",                     # build context
+    "fastapi-starter-kit",   # image name
+    ".",                     # build context (Dockerfile 위치)
+    dockerfile="Dockerfile",
     tag=git_sha,
 )
 
 # -----------------------------
-# 2. Helm Render
-
-# Helm deploy
+# 3. Helm Deploy
+# -----------------------------
 helm_release(
     name=os.getenv("HELM_PACKAGE_NAME", "fastapi-starter-kit"),
     chart="deployments/helm",
@@ -27,11 +30,7 @@ helm_release(
     },
 )
 
-
 # -----------------------------
-# 3. Apply to Cluster
-k8s_yaml(helm_chart)
-
+# 4. kind 클러스터 이미지 자동 로드
 # -----------------------------
-# 4. kind 이미지 자동 로드
 k8s_kind()
